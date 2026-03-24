@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Banque Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            margin-top: 100px;
+        }
+        
+        .login-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .login-body {
+            padding: 40px;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .status-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        
+        .status-badge i {
+            margin-right: 5px;
+        }
+        
+        .status-online {
+            color: #28a745;
+        }
+        
+        .status-offline {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container login-container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fas fa-university fa-3x mb-3"></i>
+                        <h2>Banque Digital</h2>
+                        <p class="mb-0">Accédez à votre espace sécurisé</p>
+                    </div>
+                    <div class="login-body">
+                        {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user"></i> Nom d'utilisateur
+                                </label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       placeholder="admin" required autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Mot de passe
+                                </label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn btn-login text-white">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter
+                            </button>
+                        </form>
+                        
+                        <div class="demo-credentials">
+                            <h6><i class="fas fa-info-circle"></i> Comptes de démonstration:</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Admin:</strong> admin / admin123</li>
+                                <li><strong>Utilisateur:</strong> user / user123</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-badge">
+        <i class="fas fa-server"></i> Backend: 
+        <span id="backend-status" class="status-offline">Vérification...</span>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Vérifier le statut du backend
+        async function checkBackendStatus() {
+            try {
+                const response = await fetch('{{ BACKEND_URL }}/auth/login', {
+                    method: 'OPTIONS',
+                    timeout: 5000
+                });
+                const statusSpan = document.getElementById('backend-status');
+                statusSpan.textContent = 'En ligne';
+                statusSpan.className = 'status-online';
+            } catch (error) {
+                const statusSpan = document.getElementById('backend-status');
+                statusSpan.textContent = 'Hors ligne';
+                statusSpan.className = 'status-offline';
+            }
+        }
+        
+        // Vérifier le statut au chargement
+        checkBackendStatus();
+        // Vérifier toutes les 30 secondes
+        setInterval(checkBackendStatus, 30000);
+    </script>
+</body>
+</html>

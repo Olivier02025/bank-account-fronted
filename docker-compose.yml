@@ -4,14 +4,17 @@ services:
     ports:
       - "5000:5000"
     environment:
-      # - BACKEND_URL=http://host.docker.internal:3000 # (Windows)
+      # URL du backend (à adapter selon votre configuration)
+      # Pour Windows: http://host.docker.internal:3000
+      # Pour Linux: http://172.17.0.1:3000 ou l'IP de votre machine
       - BACKEND_URL=http://10.126.232.244:3000
       - SECRET_KEY=KSBK_FRONT_20260324
     networks:
       - bank-network
     restart: unless-stopped
-    # extra_hosts: # (Pour Linux)
-    #  - "host.docker.internal:host-gateway"
+    # Pour Linux, décommentez les lignes suivantes:
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
 
 networks:
   bank-network:
