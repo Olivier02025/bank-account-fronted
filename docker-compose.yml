@@ -1,0 +1,18 @@
+services:
+  bank-frontend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      # - BACKEND_URL=http://host.docker.internal:3000 # (Windows)
+      - BACKEND_URL=http://10.126.232.244:3000
+      - SECRET_KEY=KSBK_FRONT_20260324
+    networks:
+      - bank-network
+    restart: unless-stopped
+    # extra_hosts: # (Pour Linux)
+    #  - "host.docker.internal:host-gateway"
+
+networks:
+  bank-network:
+    driver: bridge
